@@ -70,7 +70,7 @@
 #   well.
 
 class APIEntry:
-	def __init__(self, getters, setters, valueMap=None, usesJson=True):
+    def __init__(self, getters, setters, valueMap=None, usesJson=True):
         self.getters = getters
         self.setters = setters
         self.valueMap = valueMap
@@ -187,6 +187,10 @@ class API_CT50v109(API):
             [('/tstat/power', 'power')],
             [('/tstat/power', 'power')]
         ),
+        'message': APIEntry(
+            [],
+            [('/tstat/pma',['line','message']) ]
+        ), 
         'cloud_mode': APIEntry(
             [],
             [('/cloud/mode', 'command')],

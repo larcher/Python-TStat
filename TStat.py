@@ -125,7 +125,7 @@ class TStat:
             return False
 
         # Check for valid values
-        if entry.valueMap is not None:
+        if entry.valueMap is not None and type(value) is not dict:
             inverse = dict((v,k) for k, v in entry.valueMap.iteritems())
             if not inverse.has_key(value) and not entry.valueMap.has_key(value):
                 l.warning("Value '%s' may not be a valid value for '%s'" % (value, key))
@@ -135,7 +135,12 @@ class TStat:
         for setter in entry.setters:
             location = setter[0]
             jsonKey = setter[1]
-            if entry.usesJson:
+            if type(jsonKey) is list:
+                # Crude validation: check that keys in value match expected keys from the API (jsonKey)
+                if sorted(jsonKey) != sorted(value.keys()):
+                    raise ValueError, "Keys of data to send don't match expected keys, %s" % jsonKey
+                params = dumps(value)
+            elif entry.usesJson:
                 params = dumps({jsonKey: value})
             else:
                 params = urllib.urlencode({jsonKey: value})
@@ -372,6 +377,12 @@ class TStat:
     def getEventLog(self):
         """Returns events?"""
         pass
+
+    def setMessage(self,message,line=0):
+        """Sends data to the message area of the display."""
+        if line not in [0,1,2]:
+            raise Exception("Only lines 0, 1, or 2 are supported.")
+        self._post('message', {'line':line, 'message':message} )
 
     def setCloudMode(self, value):
         """Sets cloud mode to state."""
