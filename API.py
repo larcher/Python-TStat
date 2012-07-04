@@ -96,10 +96,14 @@ class API:
 
 class API_CT50v109(API):
     models = ['CT50 V1.09']
+    # Added the success:0, as that seems to be how the tstat responds to most POST commands
+    #   Don't really agree with how this is done .. seems like a better approach would be to
+    #   recognize that as json and parse it, check for success == 0 ... but this works for now
     successStrings = [
                         "Tstat Command Processed",
                         "Cloud updates have been suspended till reboot",
-                        "Cloud updates activated"
+                        "Cloud updates activated",
+                        "{\"success\": 0}"
     ]
     entries = {
         'fmode': APIEntry(
